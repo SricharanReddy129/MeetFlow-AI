@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 # signup routes
-from routers import user_signup_route
+from routers import user_signup_route, user_dashboard_route
 
 # ro test db connection
 from sqlalchemy import inspect
@@ -38,7 +38,7 @@ app.add_middleware(
 
 # 4. Include the user signup router for handling Clerk webhooks
 app.include_router(user_signup_route.router)
-
+app.include_router(user_dashboard_route.router)
 # 4. Define a basic root health check endpoint to verify the server is live
 @app.get("/", tags=["Health"])
 def health_check():

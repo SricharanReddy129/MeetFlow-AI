@@ -11,3 +11,4 @@ groq
 sqlacodegen
 svix # for clerk
 PyJWT
+cryptography

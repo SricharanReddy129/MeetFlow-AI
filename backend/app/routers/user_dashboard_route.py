@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from app.database import get_db
+from database import get_db
 from services.validate_jwt import verify_clerk_session
 from services.user_dashboard_service import get_user_dashboard_logic
 
