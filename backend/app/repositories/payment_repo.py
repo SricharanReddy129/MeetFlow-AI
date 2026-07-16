@@ -1,6 +1,7 @@
 from decimal import Decimal
 from sqlalchemy.orm import Session
 from app.models.models import Payments, Users, PaymentStatusEnum, PlanEnum, CurrencyEnum
+import datetime
 
 def get_user_by_clerk_id(db: Session, clerk_user_id: str) -> Users | None:
     return db.query(Users).filter(Users.clerk_user_id == clerk_user_id).first()
