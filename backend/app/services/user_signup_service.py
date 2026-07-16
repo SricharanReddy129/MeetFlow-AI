@@ -36,9 +36,15 @@ class UserSignUpService:
             raise ValueError("Missing required email address")
         
         # 3. Extract Name strictly (rejecting empty values entirely)
-        first_name = data.get("first_name") or ""
-        last_name = data.get("last_name") or ""
-        name = f"{first_name} {last_name}".strip()
+        first_name = data.get("first_name", "").strip()
+        last_name = data.get("last_name", "").strip()
+        
+        # Combine and ensure neither part was just whitespace
+        if not first_name or not last_name:
+            logger.error(f"Clerk Webhook Name validation failed for User ID: {clerk_id}. First: '{first_name}', Last: '{last_name}'")
+            raise ValueError("First and Last name are both required.")
+            
+        name = f"{first_name} {last_name}"
         
         if not name:
             logger.error(f"Clerk Webhook Missing Name for User ID: {clerk_id}")
