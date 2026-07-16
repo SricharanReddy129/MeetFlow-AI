@@ -5,19 +5,28 @@ import { DashboardData } from "../types/user";
 const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function getUserDashboardData(): Promise<DashboardData | null> {
+  if (!BACKEND_URL) {
+    console.error("NEXT_PUBLIC_API_URL is not set");
+    return null;
+  }
+
   const { getToken } = await auth();
   const token = await getToken();
 
-  // Replaced the hardcoded localhost string with the dynamic base URL
-  const response = await fetch(`${BACKEND_URL}/api/users/me`, {
-    method: "GET",
-    headers: {
-      "Authorization": `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-    cache: "no-store",
-  });
+  try {
+    const response = await fetch(`${BACKEND_URL}/api/users/me`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      cache: "no-store",
+    });
 
-  if (!response.ok) return null;
-  return response.json();
+    if (!response.ok) return null;
+    return response.json();
+  } catch (error) {
+    console.error("Failed to fetch dashboard data:", error);
+    return null;
+  }
 }
