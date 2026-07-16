@@ -1,40 +1,30 @@
 import { UserButton } from "@clerk/nextjs";
-import { auth, currentUser } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
-import { getUserAccountData } from "../../services/api";
+import { getUserDashboardData } from "../../services/api";
 
 export default async function Dashboard() {
-  const { userId } = await auth();
+  const data = await getUserDashboardData();
 
-  if (!userId) {
-    redirect("/");
-  }
-
-  const user = await currentUser();
-  
-  // Call your FastAPI backend!
-  const dbAccount = await getUserAccountData();
+  if (!data) return <div>Error loading dashboard data.</div>;
 
   return (
-    <div style={{ padding: "40px", fontFamily: "sans-serif" }}>
-      <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #ccc", paddingBottom: "20px" }}>
-        <h1>My Dashboard</h1>
-        <UserButton />
-      </header>
+    <div style={{ padding: "40px" }}>
+      <h1>Welcome, {data.name}</h1>
+      <p>Current Plan: <strong>{data.plan}</strong></p>
 
-      <main style={{ marginTop: "40px" }}>
-        <h2>Welcome back, {user?.firstName}!</h2>
-        
-        {/* Render data directly from your database */}
-        <div style={{ marginTop: "20px", padding: "20px", background: "#f5f5f5", borderRadius: "8px" }}>
-          <h3>Account Status</h3>
-          {dbAccount ? (
-             <p>Your current plan: <strong>{dbAccount.tier}</strong></p>
-          ) : (
-             <p style={{ color: "red" }}>Could not connect to the backend database.</p>
-          )}
+      {/* Conditional UI for FREE users */}
+      {data.plan === "FREE" && (
+        <div style={{ border: "1px solid #ccc", padding: "20px", marginTop: "20px" }}>
+          <h3>Usage Status</h3>
+          <p>Daily Usage: {data.daily_usage}</p>
+          <p>Attempts Left: {data.remaining_attempts}</p>
+          <button style={{ marginTop: "10px" }}>Upgrade to PRO</button>
         </div>
-      </main>
+      )}
+
+      {/* History Button (Always visible) */}
+      <button style={{ marginTop: "20px" }}>View History</button>
+      
+      <UserButton />
     </div>
   );
 }
