@@ -1,6 +1,6 @@
 import datetime
 from sqlalchemy.orm import Session
-from sqlalchemy import asc
+from sqlalchemy import asc, desc
 from app.models.models import Meetings, Users
 
 def get_user_by_clerk_id(db: Session, clerk_user_id: str) -> Users | None:
@@ -53,3 +53,18 @@ def create_meeting(
     db.commit()
     db.refresh(meeting)
     return meeting
+
+def get_meetings_by_user(db: Session, user_id) -> list[Meetings]:
+    return (
+        db.query(Meetings)
+        .filter(Meetings.user_id == user_id)
+        .order_by(desc(Meetings.created_at))
+        .all()
+    )
+
+def get_meeting_by_id(db: Session, meeting_id, user_id) -> Meetings | None:
+    return (
+        db.query(Meetings)
+        .filter(Meetings.id == meeting_id, Meetings.user_id == user_id)
+        .first()
+    )

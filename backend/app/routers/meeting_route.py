@@ -31,3 +31,57 @@ def new_meeting(
         raise HTTPException(status_code=400, detail=str(e))
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
+    
+@router.get("")
+def get_meetings(
+    db: Session = Depends(get_db),
+    clerk_user_id: str = Depends(verify_clerk_session),
+):
+    try:
+        meetings = meeting_service.list_meetings(db, clerk_user_id)
+        return [
+            {
+                "id": str(m.id),
+                "title": m.title,
+                "summary": m.summary,
+                "action_items": m.action_items.get("items", []),
+                "transcript_word_count": m.transcript_word_count,
+                "created_at": m.created_at.isoformat(),
+            }
+            for m in meetings
+        ]
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@router.get("/{meeting_id}")
+def get_meeting(
+    meeting_id: str,
+    db: Session = Depends(get_db),
+    clerk_user_id: str = Depends(verify_clerk_session),
+):
+    try:
+        meeting = meeting_service.get_meeting(db, clerk_user_id, meeting_id)
+        return {
+            "id": str(meeting.id),
+            "title": meeting.title,
+            "summary": meeting.summary,
+            "action_items": meeting.action_items.get("items", []),
+            "transcript_word_count": meeting.transcript_word_count,
+            "created_at": meeting.created_at.isoformat(),
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@router.delete("/{meeting_id}")
+def delete_meeting(
+    meeting_id: str,
+    db: Session = Depends(get_db),
+    clerk_user_id: str = Depends(verify_clerk_session),
+):
+    try:
+        meeting_service.delete_meeting_by_id(db, clerk_user_id, meeting_id)
+        return {"status": "deleted"}
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))

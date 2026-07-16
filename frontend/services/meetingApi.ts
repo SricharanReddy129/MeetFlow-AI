@@ -14,3 +14,25 @@ export async function uploadMeeting(token: string, file: File) {
 
   return { ok: res.ok, status: res.status, data };
 }
+
+export async function fetchMeetings(token: string) {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/meetings`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.json();
+}
+
+export async function fetchMeetingById(token: string, id: string) {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/meetings/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.json();
+}
+
+export async function deleteMeetingById(token: string, id: string) {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/meetings/${id}`, {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.json();
+}

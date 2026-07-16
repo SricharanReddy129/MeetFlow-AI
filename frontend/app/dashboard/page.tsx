@@ -2,6 +2,7 @@ import { UserButton } from "@clerk/nextjs";
 import { getUserDashboardData } from "../../services/api";
 import UpgradeButton from "../../components/UpgradeButton";
 import NewMeetingUpload from "../../components/NewMeetingUpload";
+import Link from "next/link";
 
 export default async function Dashboard() {
   const data = await getUserDashboardData();
@@ -24,7 +25,9 @@ export default async function Dashboard() {
 
       <NewMeetingUpload />
 
-      <button style={{ marginTop: "20px" }}>View History</button>
+      <Link href="/history">
+        <button style={{ marginTop: "20px" }}>View History</button>
+      </Link>
 
       <UserButton />
     </div>

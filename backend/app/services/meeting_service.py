@@ -105,3 +105,32 @@ def create_meeting(db: Session, clerk_user_id: str, file: UploadFile) -> "Meetin
     meeting_repo.increment_daily_usage(db, user)
 
     return meeting
+
+def list_meetings(db: Session, clerk_user_id: str) -> list:
+    user = meeting_repo.get_user_by_clerk_id(db, clerk_user_id)
+    if not user:
+        raise ValueError("User not found")
+    return meeting_repo.get_meetings_by_user(db, user.id)
+
+
+def get_meeting(db: Session, clerk_user_id: str, meeting_id: str):
+    user = meeting_repo.get_user_by_clerk_id(db, clerk_user_id)
+    if not user:
+        raise ValueError("User not found")
+
+    meeting = meeting_repo.get_meeting_by_id(db, meeting_id, user.id)
+    if not meeting:
+        raise ValueError("Meeting not found")
+    return meeting
+
+
+def delete_meeting_by_id(db: Session, clerk_user_id: str, meeting_id: str) -> None:
+    user = meeting_repo.get_user_by_clerk_id(db, clerk_user_id)
+    if not user:
+        raise ValueError("User not found")
+
+    meeting = meeting_repo.get_meeting_by_id(db, meeting_id, user.id)
+    if not meeting:
+        raise ValueError("Meeting not found")
+
+    meeting_repo.delete_meeting(db, meeting)
