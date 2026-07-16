@@ -62,7 +62,7 @@ export default function UpgradeButton() {
   return (
     <>
       <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
-      <button style={{ marginTop: "10px" }} onClick={handleUpgradeClick}>
+      <button className="primary-button" onClick={handleUpgradeClick}>
         Upgrade to PRO
       </button>
     </>

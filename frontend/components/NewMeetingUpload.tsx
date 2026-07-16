@@ -42,17 +42,18 @@ export default function NewMeetingUpload() {
   }
 
   return (
-    <div style={{ border: "1px solid #ccc", padding: "20px", marginTop: "20px" }}>
-      <h3>New Meeting</h3>
-      <input
-        type="file"
-        accept=".pdf,.txt,.docx"
-        onChange={(e) => setFile(e.target.files?.[0] || null)}
-      />
-      <button style={{ marginLeft: "10px" }} onClick={handleUpload} disabled={loading}>
-        {loading ? "Processing..." : "Upload & Summarize"}
-      </button>
-      {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}
+    <div className="upload-content">
+      <div className="upload-field">
+        <input
+          type="file"
+          accept=".pdf,.txt,.docx"
+          onChange={(e) => setFile(e.target.files?.[0] || null)}
+        />
+        <button className="primary-button" onClick={handleUpload} disabled={loading}>
+          {loading ? "Processing..." : "Upload & Summarize"}
+        </button>
+      </div>
+      {error && <p className="upload-error">{error}</p>}
     </div>
   );
 }

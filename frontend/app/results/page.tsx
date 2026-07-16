@@ -34,32 +34,56 @@ export default function ResultsPage() {
 
   if (!result) {
     return (
-      <div style={{ padding: "40px" }}>
-        <p>No results to show.</p>
-        <Link href="/history">Back to History</Link>
-      </div>
+      <main className="page-shell">
+        <div className="page-frame">
+          <div className="empty-state">
+            <p>No results to show.</p>
+            <Link className="subtle-link" href="/history">
+              Back to History
+            </Link>
+          </div>
+        </div>
+      </main>
     );
   }
 
   return (
-    <div style={{ padding: "40px", maxWidth: "700px" }}>
-      <h1>{result.title}</h1>
-      <p style={{ color: "#666" }}>{result.transcript_word_count} words</p>
+    <main className="page-shell">
+      <div className="page-frame">
+        <section className="page-card result-card">
+          <div className="page-hero">
+            <div>
+              <div className="page-kicker">Result</div>
+              <h1 className="page-title">{result.title}</h1>
+              <p className="result-meta">{result.transcript_word_count} words</p>
+            </div>
+            <div className="button-row">
+              <button className="primary-button" onClick={handleDownload}>
+                Download PDF
+              </button>
+              <Link className="button-link secondary-button" href="/history">
+                Back to History
+              </Link>
+            </div>
+          </div>
 
-      <h3>Summary</h3>
-      <p>{result.summary}</p>
+          <div className="result-list">
+            <section className="summary-card">
+              <div className="page-kicker">Summary</div>
+              <p className="result-summary">{result.summary}</p>
+            </section>
 
-      <h3>Action Items</h3>
-      <ul>
-        {result.action_items.map((item, i) => (
-          <li key={i}>{item}</li>
-        ))}
-      </ul>
-
-      <button onClick={handleDownload}>Download PDF</button>
-      <div style={{ marginTop: "10px" }}>
-        <Link href="/history">Back to History</Link>
+            <section className="summary-card">
+              <div className="page-kicker">Action Items</div>
+              <ul className="action-list">
+                {result.action_items.map((item, i) => (
+                  <li key={i}>{item}</li>
+                ))}
+              </ul>
+            </section>
+          </div>
+        </section>
       </div>
-    </div>
+    </main>
   );
 }

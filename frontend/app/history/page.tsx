@@ -55,58 +55,75 @@ export default function HistoryPage() {
   }
 
   if (loading) {
-    return <div style={{ padding: "40px" }}>Loading...</div>;
+    return (
+      <main className="page-shell">
+        <div className="page-frame">
+          <div className="empty-state">Loading...</div>
+        </div>
+      </main>
+    );
   }
 
   return (
-    <div style={{ padding: "40px", maxWidth: "700px" }}>
-      <h1>Meeting History</h1>
+    <main className="page-shell">
+      <div className="page-frame">
+        <section className="page-card">
+          <div className="page-hero">
+            <div>
+              <div className="page-kicker">History</div>
+              <h1 className="page-title">Meeting history</h1>
+              <p className="page-copy">
+                Review past summaries, download PDFs, or remove entries you no longer need.
+              </p>
+            </div>
+            <div className="button-row">
+              <Link className="button-link secondary-button" href="/dashboard">
+                Back to Dashboard
+              </Link>
+            </div>
+          </div>
 
-      {meetings.length === 0 && <p>No meetings yet.</p>}
-
-      {meetings.map((meeting) => (
-        <div
-          key={meeting.id}
-          style={{ border: "1px solid #ccc", padding: "15px", marginBottom: "10px" }}
-        >
-          <h3>{meeting.title}</h3>
-          <p style={{ color: "#666", fontSize: "0.9em" }}>
-            {new Date(meeting.created_at).toLocaleString()} — {meeting.transcript_word_count} words
-          </p>
-
-          <button onClick={() => handleView(meeting)}>View</button>
-          <button style={{ marginLeft: "10px" }} onClick={() => handleDownload(meeting)}>
-            Download PDF
-          </button>
-
-          {confirmingId === meeting.id ? (
-            <>
-              <span style={{ marginLeft: "10px" }}>Delete this meeting?</span>
-              <button
-                style={{ marginLeft: "10px", color: "red" }}
-                onClick={() => handleConfirmDelete(meeting.id)}
-              >
-                Confirm
-              </button>
-              <button
-                style={{ marginLeft: "10px" }}
-                onClick={() => setConfirmingId(null)}
-              >
-                Cancel
-              </button>
-            </>
+          {meetings.length === 0 ? (
+            <div className="empty-state">No meetings yet.</div>
           ) : (
-            <button
-              style={{ marginLeft: "10px" }}
-              onClick={() => setConfirmingId(meeting.id)}
-            >
-              Delete
-            </button>
-          )}
-        </div>
-      ))}
+            <div className="history-list">
+              {meetings.map((meeting) => (
+                <article key={meeting.id} className="meeting-card">
+                  <h3>{meeting.title}</h3>
+                  <p className="meeting-meta">
+                    {new Date(meeting.created_at).toLocaleString()} — {meeting.transcript_word_count} words
+                  </p>
 
-      <Link href="/dashboard">Back to Dashboard</Link>
-    </div>
+                  <div className="button-row">
+                    <button className="primary-button" onClick={() => handleView(meeting)}>
+                      View
+                    </button>
+                    <button className="secondary-button" onClick={() => handleDownload(meeting)}>
+                      Download PDF
+                    </button>
+
+                    {confirmingId === meeting.id ? (
+                      <>
+                        <span className="upload-note">Delete this meeting?</span>
+                        <button className="destructive-button" onClick={() => handleConfirmDelete(meeting.id)}>
+                          Confirm
+                        </button>
+                        <button className="ghost-button" onClick={() => setConfirmingId(null)}>
+                          Cancel
+                        </button>
+                      </>
+                    ) : (
+                      <button className="ghost-button" onClick={() => setConfirmingId(meeting.id)}>
+                        Delete
+                      </button>
+                    )}
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
+        </section>
+      </div>
+    </main>
   );
 }

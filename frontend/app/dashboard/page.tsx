@@ -7,38 +7,81 @@ import Link from "next/link";
 export default async function Dashboard() {
   const data = await getUserDashboardData();
 
-  if (!data) return <div>Error loading dashboard data.</div>;
+  if (!data) {
+    return (
+      <main className="page-shell">
+        <div className="page-frame">
+          <div className="empty-state">Error loading dashboard data.</div>
+        </div>
+      </main>
+    );
+  }
 
   return (
-    <div style={{ padding: "40px" }}>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "20px",
-        }}
-      >
-        <h1 style={{ margin: 0 }}>Welcome, {data.name}</h1>
-        <UserButton />
+    <main className="page-shell">
+      <div className="page-frame dashboard-layout">
+        <section className="dashboard-main">
+          <div className="page-card">
+            <div className="page-kicker">Dashboard</div>
+            <div className="page-hero">
+              <div>
+                <h1 className="page-title">Welcome, {data.name}</h1>
+                <p className="page-copy">
+                  Capture meetings, turn them into clear summaries, and keep momentum moving without noise.
+                </p>
+              </div>
+              <UserButton />
+            </div>
+
+            <div className="dashboard-stats">
+              <div className="stat-card">
+                <p className="stat-label">Current plan</p>
+                <div className="stat-value">{data.plan}</div>
+              </div>
+              <div className="stat-card">
+                <p className="stat-label">Daily usage</p>
+                <div className="stat-value">{data.daily_usage}</div>
+              </div>
+              <div className="stat-card">
+                <p className="stat-label">Attempts left</p>
+                <div className="stat-value">{data.remaining_attempts}</div>
+              </div>
+            </div>
+          </div>
+
+          <section className="page-card upload-shell">
+            <div className="page-kicker">New Meeting</div>
+            <h2 className="panel-title">Upload and summarize</h2>
+            <p className="upload-note">
+              Drop in a PDF, text, or DOCX file and let MeetFlow build the summary for you.
+            </p>
+            <NewMeetingUpload />
+          </section>
+        </section>
+
+        <aside className="dashboard-side">
+          {data.plan === "FREE" && (
+            <section className="section-card">
+              <div className="page-kicker">Usage</div>
+              <h2 className="panel-title">Plan status</h2>
+              <p className="upload-note">
+                You are currently on the free plan. Upgrade to unlock more uploads and a smoother workflow.
+              </p>
+              <UpgradeButton />
+            </section>
+          )}
+
+          <section className="section-card">
+            <div className="page-kicker">Quick Links</div>
+            <h2 className="panel-title">Next step</h2>
+            <div className="button-row">
+              <Link className="button-link primary-button" href="/history">
+                View History
+              </Link>
+            </div>
+          </section>
+        </aside>
       </div>
-
-      <p>Current Plan: <strong>{data.plan}</strong></p>
-
-      {data.plan === "FREE" && (
-        <div style={{ border: "1px solid #ccc", padding: "20px", marginTop: "20px" }}>
-          <h3>Usage Status</h3>
-          <p>Daily Usage: {data.daily_usage}</p>
-          <p>Attempts Left: {data.remaining_attempts}</p>
-          <UpgradeButton />
-        </div>
-      )}
-
-      <NewMeetingUpload />
-
-      <Link href="/history">
-        <button style={{ marginTop: "20px" }}>View History</button>
-      </Link>
-    </div>
+    </main>
   );
 }
