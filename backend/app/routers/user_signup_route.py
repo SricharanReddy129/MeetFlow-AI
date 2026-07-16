@@ -9,14 +9,16 @@ from svix.exceptions import WebhookVerificationError
 
 # Adjust these imports to match your actual project structure
 from database import get_db 
-from services.user_service import UserSignUpService
+from services.user_signup_service import UserSignUpService
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter(prefix="/api/webhooks", tags=["Auth & Webhooks"])
+# The prefix groups this under your application's onboarding flow
+router = APIRouter(prefix="/api/onboarding", tags=["User Onboarding"])
 
-@router.post("/clerk", status_code=status.HTTP_200_OK)
-async def clerk_webhook(request: Request, db: Session = Depends(get_db)):
+# The endpoint describes the specific action
+@router.post("/clerk-sync", status_code=status.HTTP_200_OK)
+async def sync_clerk_signup(request: Request, db: Session = Depends(get_db)):
     """
     Endpoint for Clerk webhooks. 
     Verifies the svix signature and processes the user.created event.
