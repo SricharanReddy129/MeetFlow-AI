@@ -2,34 +2,61 @@ import { SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 
 export default async function Home() {
-  // Check the authentication state directly on the server
   const { userId } = await auth();
 
   return (
-    <main style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "100vh", fontFamily: "sans-serif" }}>
-      <h1>Welcome to the App</h1>
-      
-      {!userId ? (
-        <>
-          {/* Render this if the user is NOT logged in */}
-          <p style={{ marginBottom: "20px" }}>Please sign in or sign up to continue.</p>
-          <div style={{ display: "flex", gap: "10px" }}>
-            <SignInButton mode="modal">
-              <button style={{ padding: "10px 20px", cursor: "pointer" }}>Sign In</button>
-            </SignInButton>
-            
-            <SignUpButton mode="modal">
-              <button style={{ padding: "10px 20px", cursor: "pointer" }}>Sign Up</button>
-            </SignUpButton>
+    <main className="landing-shell">
+      <section className="hero-card">
+        <div className="hero-badge">MeetFlow AI</div>
+        <h1>Clean meetings. Clear outcomes.</h1>
+        <p className="hero-copy">
+          Upload meeting audio, get structured summaries, and keep every decision easy to revisit.
+        </p>
+
+        <div className="hero-points" aria-label="Product highlights">
+          <span>Fast uploads</span>
+          <span>Readable summaries</span>
+          <span>Simple history</span>
+        </div>
+
+        <div className="hero-action-row">
+          {!userId ? (
+            <>
+              <SignInButton mode="modal">
+                <button className="primary-button">Sign In</button>
+              </SignInButton>
+
+              <SignUpButton mode="modal">
+                <button className="secondary-button">Sign Up</button>
+              </SignUpButton>
+            </>
+          ) : (
+            <>
+              <div className="signed-in-note">You are securely logged in.</div>
+              <UserButton />
+            </>
+          )}
+        </div>
+      </section>
+
+      <aside className="hero-panel" aria-label="Preview">
+        <div className="panel-card">
+          <div className="panel-kicker">Today</div>
+          <div className="panel-title">Meeting summary preview</div>
+          <div className="panel-item">
+            <span>Action items</span>
+            <strong>3</strong>
           </div>
-        </>
-      ) : (
-        <>
-          {/* Render this if the user IS logged in */}
-          <p style={{ marginBottom: "20px" }}>You are securely logged in!</p>
-          <UserButton />
-        </>
-      )}
+          <div className="panel-item">
+            <span>Key decisions</span>
+            <strong>5</strong>
+          </div>
+          <div className="panel-item">
+            <span>Follow-ups</span>
+            <strong>2</strong>
+          </div>
+        </div>
+      </aside>
     </main>
   );
 }
