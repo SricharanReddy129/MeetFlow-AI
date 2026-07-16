@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from app.database import get_db
 from app.services import payment_service
 from app.services.validate_jwt import verify_clerk_session
+from app.services.validate_jwt import get_current_user
 
 router = APIRouter(prefix="/api/payments", tags=["payments"])
 
@@ -13,7 +14,7 @@ class VerifyPaymentRequest(BaseModel):
     signature: str
 
 @router.post("/create-order")
-def create_order(db: Session = Depends(get_db), clerk_user_id: str = Depends(verify_clerk_session)):
+def create_order(db: Session = Depends(get_db), clerk_user_id: str = Depends(get_current_user)):
     try:
         return payment_service.create_order(db, clerk_user_id)
     except ValueError as e:
@@ -23,7 +24,7 @@ def create_order(db: Session = Depends(get_db), clerk_user_id: str = Depends(ver
 def verify_payment(
     payload: VerifyPaymentRequest,
     db: Session = Depends(get_db),
-    clerk_user_id: str = Depends(verify_clerk_session),
+    clerk_user_id: str = Depends(get_current_user),
 ):
     try:
         payment_service.verify_and_upgrade(

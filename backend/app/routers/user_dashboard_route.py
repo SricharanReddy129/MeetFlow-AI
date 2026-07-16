@@ -2,13 +2,14 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from database import get_db
 from services.validate_jwt import verify_clerk_session
+from services.validate_jwt import get_current_user
 from services.user_dashboard_service import get_user_dashboard_logic
 
 router = APIRouter()
 
 @router.get("/api/users/me")
 def get_dashboard(
-    clerk_id: str = Depends(verify_clerk_session),
+    clerk_id: str = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     data = get_user_dashboard_logic(db, clerk_id)

@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.services import meeting_service
 from app.services.validate_jwt import verify_clerk_session
+from app.services.validate_jwt import get_current_user
 from fastapi.responses import Response
 
 router = APIRouter(prefix="/api/meetings", tags=["meetings"])
@@ -12,7 +13,7 @@ router = APIRouter(prefix="/api/meetings", tags=["meetings"])
 def new_meeting(
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
-    clerk_user_id: str = Depends(verify_clerk_session),
+    clerk_user_id: str = Depends(get_current_user),
 ):
     try:
         meeting = meeting_service.create_meeting(db, clerk_user_id, file)
@@ -36,7 +37,7 @@ def new_meeting(
 @router.get("")
 def get_meetings(
     db: Session = Depends(get_db),
-    clerk_user_id: str = Depends(verify_clerk_session),
+    clerk_user_id: str = Depends(get_current_user),
 ):
     try:
         meetings = meeting_service.list_meetings(db, clerk_user_id)
@@ -59,7 +60,7 @@ def get_meetings(
 def get_meeting(
     meeting_id: str,
     db: Session = Depends(get_db),
-    clerk_user_id: str = Depends(verify_clerk_session),
+    clerk_user_id: str = Depends(get_current_user),
 ):
     try:
         meeting = meeting_service.get_meeting(db, clerk_user_id, meeting_id)
@@ -79,7 +80,7 @@ def get_meeting(
 def delete_meeting(
     meeting_id: str,
     db: Session = Depends(get_db),
-    clerk_user_id: str = Depends(verify_clerk_session),
+    clerk_user_id: str = Depends(get_current_user),
 ):
     try:
         meeting_service.delete_meeting_by_id(db, clerk_user_id, meeting_id)
@@ -92,7 +93,7 @@ def delete_meeting(
 def download_meeting_pdf(
     meeting_id: str,
     db: Session = Depends(get_db),
-    clerk_user_id: str = Depends(verify_clerk_session),
+    clerk_user_id: str = Depends(get_current_user),
 ):
     try:
         meeting = meeting_service.get_meeting(db, clerk_user_id, meeting_id)
