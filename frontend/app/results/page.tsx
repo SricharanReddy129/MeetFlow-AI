@@ -46,7 +46,7 @@ export default function ResultsPage() {
         ))}
       </ul>
 
-      <Link href="/dashboard">Back to Dashboard</Link>
+      <Link href="/history">Back to History</Link>
     </div>
   );
 }

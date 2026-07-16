@@ -20,6 +20,7 @@ export default function HistoryPage() {
   const router = useRouter();
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [loading, setLoading] = useState(true);
+  const [confirmingId, setConfirmingId] = useState<string | null>(null);
 
   async function loadMeetings() {
     setLoading(true);
@@ -39,11 +40,12 @@ export default function HistoryPage() {
     router.push("/results");
   }
 
-  async function handleDelete(id: string) {
+  async function handleConfirmDelete(id: string) {
     const token = await getToken();
     if (!token) return;
     await deleteMeetingById(token, id);
     setMeetings((prev) => prev.filter((m) => m.id !== id));
+    setConfirmingId(null);
   }
 
   if (loading) {
@@ -65,13 +67,33 @@ export default function HistoryPage() {
           <p style={{ color: "#666", fontSize: "0.9em" }}>
             {new Date(meeting.created_at).toLocaleString()} — {meeting.transcript_word_count} words
           </p>
+
           <button onClick={() => handleView(meeting)}>View</button>
-          <button
-            style={{ marginLeft: "10px" }}
-            onClick={() => handleDelete(meeting.id)}
-          >
-            Delete
-          </button>
+
+          {confirmingId === meeting.id ? (
+            <>
+              <span style={{ marginLeft: "10px" }}>Delete this meeting?</span>
+              <button
+                style={{ marginLeft: "10px", color: "red" }}
+                onClick={() => handleConfirmDelete(meeting.id)}
+              >
+                Confirm
+              </button>
+              <button
+                style={{ marginLeft: "10px" }}
+                onClick={() => setConfirmingId(null)}
+              >
+                Cancel
+              </button>
+            </>
+          ) : (
+            <button
+              style={{ marginLeft: "10px" }}
+              onClick={() => setConfirmingId(meeting.id)}
+            >
+              Delete
+            </button>
+          )}
         </div>
       ))}
 
