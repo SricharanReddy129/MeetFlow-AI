@@ -1,53 +1,33 @@
-from sqlalchemy import create_engine, MetaData
+import os
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
-import os
 import logging
 
-# Load environment variables from .env
+# Load environment variables
 load_dotenv()
 
-# Fetch variables using the exact keys from your .env
+# Fetch and construct the URL
 USER = os.getenv("SUPABASE_USERNAME")
 PASSWORD = os.getenv("SUPABASE_PASSWORD")
 HOST = os.getenv("SUPABASE_HOST")
 PORT = os.getenv("SUPABASE_PORT")
 DBNAME = os.getenv("SUPABASE_DBNAME")
 
-# Construct the SQLAlchemy connection string
+# Construct the URL
 DATABASE_URL = f"postgresql+psycopg2://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}?sslmode=require"
 
+logging.info(f"Attempting to connect to database at: {DATABASE_URL}")
 
-# Add this before you initialize the engine
-db_url = os.getenv("DATABASE_URL")
-logging.info(f"Attempting to connect to database at: {db_url}")
-
-# Create the SQLAlchemy engine
+# Create the engine
 engine = create_engine(DATABASE_URL)
 
-# Initialize MetaData and reflect the existing Supabase schema
-metadata = MetaData()
-metadata.reflect(bind=engine)
-
-# Map the reflected tables to variables for easy access in your routes
-users_table = metadata.tables.get('users')
-meetings_table = metadata.tables.get('meetings')
-payments_table = metadata.tables.get('payments')
-
-# Create a configured "SessionLocal" class for generating database sessions
+# UNCOMMENTED: This is now defined, so get_db() will work
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# Dependency to get the database session in FastAPI routes safely
 def get_db():
     db = SessionLocal()
     try:
         yield db
     finally:
         db.close()
-
-# Test the connection and reflection
-try:
-    with engine.connect() as connection:
-        print("Connection and schema reflection successful!")
-except Exception as e:
-    print(f"Failed to connect: {e}")
