@@ -13,3 +13,5 @@ svix # for clerk
 PyJWT
 cryptography
 razorpay
+pypdf
+python-docx
