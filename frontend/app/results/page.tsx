@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useAuth } from "@clerk/nextjs";
 import Link from "next/link";
+import { downloadMeetingPdf } from "../../services/meetingApi";
 
 interface MeetingResult {
   id: string;
@@ -13,6 +15,7 @@ interface MeetingResult {
 }
 
 export default function ResultsPage() {
+  const { getToken } = useAuth();
   const [result, setResult] = useState<MeetingResult | null>(null);
 
   useEffect(() => {
@@ -22,11 +25,18 @@ export default function ResultsPage() {
     }
   }, []);
 
+  async function handleDownload() {
+    if (!result) return;
+    const token = await getToken();
+    if (!token) return;
+    await downloadMeetingPdf(token, result.id, result.title);
+  }
+
   if (!result) {
     return (
       <div style={{ padding: "40px" }}>
         <p>No results to show.</p>
-        <Link href="/dashboard">Back to Dashboard</Link>
+        <Link href="/history">Back to History</Link>
       </div>
     );
   }
@@ -46,7 +56,10 @@ export default function ResultsPage() {
         ))}
       </ul>
 
-      <Link href="/history">Back to History</Link>
+      <button onClick={handleDownload}>Download PDF</button>
+      <div style={{ marginTop: "10px" }}>
+        <Link href="/history">Back to History</Link>
+      </div>
     </div>
   );
 }

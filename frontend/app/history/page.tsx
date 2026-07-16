@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { fetchMeetings, deleteMeetingById } from "../../services/meetingApi";
+import { fetchMeetings, deleteMeetingById, downloadMeetingPdf } from "../../services/meetingApi";
 
 interface Meeting {
   id: string;
@@ -40,6 +40,12 @@ export default function HistoryPage() {
     router.push("/results");
   }
 
+  async function handleDownload(meeting: Meeting) {
+    const token = await getToken();
+    if (!token) return;
+    await downloadMeetingPdf(token, meeting.id, meeting.title);
+  }
+
   async function handleConfirmDelete(id: string) {
     const token = await getToken();
     if (!token) return;
@@ -69,6 +75,9 @@ export default function HistoryPage() {
           </p>
 
           <button onClick={() => handleView(meeting)}>View</button>
+          <button style={{ marginLeft: "10px" }} onClick={() => handleDownload(meeting)}>
+            Download PDF
+          </button>
 
           {confirmingId === meeting.id ? (
             <>

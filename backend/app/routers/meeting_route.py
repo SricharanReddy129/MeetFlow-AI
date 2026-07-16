@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.services import meeting_service
 from app.services.validate_jwt import verify_clerk_session
+from fastapi.responses import Response
 
 router = APIRouter(prefix="/api/meetings", tags=["meetings"])
 
@@ -83,5 +84,24 @@ def delete_meeting(
     try:
         meeting_service.delete_meeting_by_id(db, clerk_user_id, meeting_id)
         return {"status": "deleted"}
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    
+    
+@router.get("/{meeting_id}/pdf")
+def download_meeting_pdf(
+    meeting_id: str,
+    db: Session = Depends(get_db),
+    clerk_user_id: str = Depends(verify_clerk_session),
+):
+    try:
+        meeting = meeting_service.get_meeting(db, clerk_user_id, meeting_id)
+        pdf_bytes = meeting_service.generate_meeting_pdf(meeting)
+        filename = f"{meeting.title[:50].strip().replace(' ', '_') or 'meeting'}.pdf"
+        return Response(
+            content=pdf_bytes,
+            media_type="application/pdf",
+            headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+        )
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))

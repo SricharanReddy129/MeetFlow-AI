@@ -16,3 +16,4 @@ razorpay
 pypdf
 python-docx
 python-multipart
+reportlab

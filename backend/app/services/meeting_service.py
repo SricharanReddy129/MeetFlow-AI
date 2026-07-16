@@ -8,6 +8,11 @@ from sqlalchemy.orm import Session
 from app import config
 from app.repositories import meeting_repo
 from app.models.models import PlanEnum
+import io
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.units import inch
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, ListFlowable, ListItem
+from reportlab.lib.styles import getSampleStyleSheet
 
 
 class DailyLimitExceededError(Exception):
@@ -134,3 +139,32 @@ def delete_meeting_by_id(db: Session, clerk_user_id: str, meeting_id: str) -> No
         raise ValueError("Meeting not found")
 
     meeting_repo.delete_meeting(db, meeting)
+
+def generate_meeting_pdf(meeting) -> bytes:
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter, topMargin=inch, bottomMargin=inch)
+    styles = getSampleStyleSheet()
+
+    elements = []
+    elements.append(Paragraph(meeting.title, styles["Title"]))
+    elements.append(Spacer(1, 12))
+
+    elements.append(Paragraph(f"Word count: {meeting.transcript_word_count}", styles["Normal"]))
+    elements.append(Paragraph(f"Created: {meeting.created_at.strftime('%Y-%m-%d %H:%M')}", styles["Normal"]))
+    elements.append(Spacer(1, 20))
+
+    elements.append(Paragraph("Executive Summary", styles["Heading2"]))
+    elements.append(Paragraph(meeting.summary, styles["Normal"]))
+    elements.append(Spacer(1, 20))
+
+    elements.append(Paragraph("Action Items", styles["Heading2"]))
+    action_items = meeting.action_items.get("items", [])
+    if action_items:
+        items = [ListItem(Paragraph(item, styles["Normal"])) for item in action_items]
+        elements.append(ListFlowable(items, bulletType="bullet"))
+    else:
+        elements.append(Paragraph("No action items.", styles["Normal"]))
+
+    doc.build(elements)
+    buffer.seek(0)
+    return buffer.read()    
