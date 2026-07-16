@@ -95,25 +95,25 @@ export default function HistoryPage() {
                   </p>
 
                   <div className="button-row">
-                    <button className="primary-button" onClick={() => handleView(meeting)}>
+                    <button className="app-button primary-button" onClick={() => handleView(meeting)}>
                       View
                     </button>
-                    <button className="secondary-button" onClick={() => handleDownload(meeting)}>
+                    <button className="app-button secondary-button" onClick={() => handleDownload(meeting)}>
                       Download PDF
                     </button>
 
                     {confirmingId === meeting.id ? (
                       <>
                         <span className="upload-note">Delete this meeting?</span>
-                        <button className="destructive-button" onClick={() => handleConfirmDelete(meeting.id)}>
+                        <button className="app-button destructive-button" onClick={() => handleConfirmDelete(meeting.id)}>
                           Confirm
                         </button>
-                        <button className="ghost-button" onClick={() => setConfirmingId(null)}>
+                        <button className="app-button ghost-button" onClick={() => setConfirmingId(null)}>
                           Cancel
                         </button>
                       </>
                     ) : (
-                      <button className="ghost-button" onClick={() => setConfirmingId(meeting.id)}>
+                      <button className="app-button ghost-button" onClick={() => setConfirmingId(meeting.id)}>
                         Delete
                       </button>
                     )}

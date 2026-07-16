@@ -38,14 +38,18 @@ export default async function Dashboard() {
                 <p className="stat-label">Current plan</p>
                 <div className="stat-value">{data.plan}</div>
               </div>
-              <div className="stat-card">
-                <p className="stat-label">Daily usage</p>
-                <div className="stat-value">{data.daily_usage}</div>
-              </div>
-              <div className="stat-card">
-                <p className="stat-label">Attempts left</p>
-                <div className="stat-value">{data.remaining_attempts}</div>
-              </div>
+              {data.plan !== "PRO" && (
+                <>
+                  <div className="stat-card">
+                    <p className="stat-label">Daily usage</p>
+                    <div className="stat-value">{data.daily_usage}</div>
+                  </div>
+                  <div className="stat-card">
+                    <p className="stat-label">Attempts left</p>
+                    <div className="stat-value">{data.remaining_attempts}</div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 

@@ -58,7 +58,7 @@ export default function ResultsPage() {
               <p className="result-meta">{result.transcript_word_count} words</p>
             </div>
             <div className="button-row">
-              <button className="primary-button" onClick={handleDownload}>
+              <button className="app-button primary-button" onClick={handleDownload}>
                 Download PDF
               </button>
               <Link className="button-link secondary-button" href="/history">

@@ -49,7 +49,7 @@ export default function NewMeetingUpload() {
           accept=".pdf,.txt,.docx"
           onChange={(e) => setFile(e.target.files?.[0] || null)}
         />
-        <button className="primary-button" onClick={handleUpload} disabled={loading}>
+        <button className="app-button primary-button" onClick={handleUpload} disabled={loading}>
           {loading ? "Processing..." : "Upload & Summarize"}
         </button>
       </div>
