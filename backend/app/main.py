@@ -4,6 +4,9 @@ from fastapi.middleware.cors import CORSMiddleware
 # signup routes
 from routers import user_signup_route
 
+# ro test db connection
+from sqlalchemy import inspect
+
 # testing models
 from fastapi import Depends
 from sqlalchemy.orm import Session
@@ -47,27 +50,23 @@ def health_check():
 
 
 # Dummy test route to verify SQLAlchemy models against Supabase
-@app.get("/test-models", tags=["Test"])
-def test_models(db: Session = Depends(get_db)):
+@app.get("/test-db-connection", tags=["Test"])
+def test_db_connection(db: Session = Depends(get_db)):
     try:
-        # Attempt to query the first record from each table to verify schema mapping
-        user = db.query(Users).first()
-        meeting = db.query(Meetings).first()
-        payment = db.query(Payments).first()
-
+        # Create an inspector bound to the current session's engine
+        inspector = inspect(db.get_bind())
+        
+        # Fetch the list of table names
+        table_names = inspector.get_table_names()
+        
         return {
             "status": "success",
-            "message": "Models are perfectly mapped to Supabase!",
-            "data": {
-                "users_table_empty": user is None,
-                "meetings_table_empty": meeting is None,
-                "payments_table_empty": payment is None
-            }
+            "message": "Successfully connected to the database!",
+            "tables_found": table_names
         }
     except Exception as e:
-        # If there is a schema mismatch, SQLAlchemy will throw an error here
         return {
             "status": "error",
-            "message": "Schema mismatch detected.",
+            "message": "Could not connect or reflect tables.",
             "details": str(e)
         }

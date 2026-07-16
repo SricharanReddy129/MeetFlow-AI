@@ -2,6 +2,7 @@ from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 import os
+import logging
 
 # Load environment variables from .env
 load_dotenv()
@@ -15,6 +16,11 @@ DBNAME = os.getenv("SUPABASE_DBNAME")
 
 # Construct the SQLAlchemy connection string
 DATABASE_URL = f"postgresql+psycopg2://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}?sslmode=require"
+
+
+# Add this before you initialize the engine
+db_url = os.getenv("DATABASE_URL")
+logging.info(f"Attempting to connect to database at: {db_url}")
 
 # Create the SQLAlchemy engine
 engine = create_engine(DATABASE_URL)
