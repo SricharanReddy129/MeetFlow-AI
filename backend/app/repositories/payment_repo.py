@@ -1,7 +1,7 @@
 from decimal import Decimal
 from sqlalchemy.orm import Session
 from app.models.models import Payments, Users, PaymentStatusEnum, PlanEnum, CurrencyEnum
-import datetime
+from datetime import datetime, timezone
 
 def get_user_by_clerk_id(db: Session, clerk_user_id: str) -> Users | None:
     return db.query(Users).filter(Users.clerk_user_id == clerk_user_id).first()
@@ -26,7 +26,7 @@ def mark_payment_paid(db: Session, order_id: str, payment_id: str) -> Payments |
         return None
     payment.status = PaymentStatusEnum.PAID
     payment.razorpay_payment_id = payment_id
-    payment.paid_at = datetime.utcnow()
+    payment.paid_at = datetime.now(timezone.utc)
     db.commit()
     return payment
 
