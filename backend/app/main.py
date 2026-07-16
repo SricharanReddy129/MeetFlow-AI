@@ -24,7 +24,7 @@ app = FastAPI(
 # Add both your local development URL and prepare for your eventual Vercel deployment URL
 origins = [
     "http://localhost:3000",
-    # "https://your-frontend-domain.vercel.app", # Uncomment and update during frontend deployment
+    "https://your-vercel-domain.vercel.app",
 ]
 
 # 3. Add CORS middleware to the application instance
