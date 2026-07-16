@@ -3,7 +3,7 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse
 from fastapi import HTTPException
 
-from services.validate_jwt import decode_clerk_tok
+from services.validate_jwt import decode_clerk_token
 
 PUBLIC_PATHS = {
     "/",
