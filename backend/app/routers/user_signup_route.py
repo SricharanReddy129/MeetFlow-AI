@@ -21,9 +21,9 @@ async def clerk_webhook(request: Request, db: Session = Depends(get_db)):
     Endpoint for Clerk webhooks. 
     Verifies the svix signature and processes the user.created event.
     """
-    clerk_secret = os.getenv("CLERK_WEBHOOK_SECRET")
+    clerk_secret = os.getenv("CLERK_SECRET_KEY")
     if not clerk_secret:
-        logger.error("CLERK_WEBHOOK_SECRET is missing from environment variables.")
+        logger.error("CLERK_SECRET_KEY is missing from environment variables.")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
             detail="Server configuration error."
