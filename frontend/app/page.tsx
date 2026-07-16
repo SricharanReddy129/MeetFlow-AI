@@ -5,7 +5,7 @@ export default async function Home() {
   const { userId } = await auth();
 
   return (
-    <main className="landing-shell">
+    <main className="landing-shell landing-shell--single">
       <section className="hero-card">
         <div className="hero-badge">MeetFlow AI</div>
         <h1>Clean meetings. Clear outcomes.</h1>
@@ -38,25 +38,6 @@ export default async function Home() {
           )}
         </div>
       </section>
-
-      <aside className="hero-panel" aria-label="Preview">
-        <div className="panel-card">
-          <div className="panel-kicker">Today</div>
-          <div className="panel-title">Meeting summary preview</div>
-          <div className="panel-item">
-            <span>Action items</span>
-            <strong>3</strong>
-          </div>
-          <div className="panel-item">
-            <span>Key decisions</span>
-            <strong>5</strong>
-          </div>
-          <div className="panel-item">
-            <span>Follow-ups</span>
-            <strong>2</strong>
-          </div>
-        </div>
-      </aside>
     </main>
   );
 }

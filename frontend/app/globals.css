@@ -217,6 +217,11 @@ button {
 	padding: 40px clamp(20px, 4vw, 56px);
 }
 
+.landing-shell--single {
+	grid-template-columns: minmax(0, 860px);
+	justify-content: center;
+}
+
 .hero-card,
 .hero-panel {
 	position: relative;
@@ -493,6 +498,10 @@ button:focus-visible {
 		align-content: start;
 		padding-top: 28px;
 		padding-bottom: 28px;
+	}
+
+	.landing-shell--single {
+		justify-content: stretch;
 	}
 
 	.hero-card h1 {
