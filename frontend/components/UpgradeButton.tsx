@@ -34,7 +34,13 @@ export default function UpgradeButton() {
       name: "MeetFlow AI",
       description: "Upgrade to Pro",
       handler: async function (response: any) {
-        const result = await verifyRazorpayPayment(token, {
+        const freshToken = await getToken(); // fresh token, in case the original expired during checkout
+        if (!freshToken) {
+          alert("Session expired. Please log in again.");
+          return;
+        }
+
+        const result = await verifyRazorpayPayment(freshToken, {
           order_id: response.razorpay_order_id,
           payment_id: response.razorpay_payment_id,
           signature: response.razorpay_signature,
