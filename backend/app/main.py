@@ -24,7 +24,7 @@ app = FastAPI(
 # Add both your local development URL and prepare for your eventual Vercel deployment URL
 origins = [
     "http://localhost:3000",
-    "https://your-vercel-domain.vercel.app",
+    "https://meet-flow-ai-chi.vercel.app",
 ]
 
 # 3. Add CORS middleware to the application instance
