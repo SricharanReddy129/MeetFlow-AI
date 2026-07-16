@@ -11,7 +11,18 @@ export default async function Dashboard() {
 
   return (
     <div style={{ padding: "40px" }}>
-      <h1>Welcome, {data.name}</h1>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "20px",
+        }}
+      >
+        <h1 style={{ margin: 0 }}>Welcome, {data.name}</h1>
+        <UserButton />
+      </div>
+
       <p>Current Plan: <strong>{data.plan}</strong></p>
 
       {data.plan === "FREE" && (
@@ -28,8 +39,6 @@ export default async function Dashboard() {
       <Link href="/history">
         <button style={{ marginTop: "20px" }}>View History</button>
       </Link>
-
-      <UserButton />
     </div>
   );
 }
