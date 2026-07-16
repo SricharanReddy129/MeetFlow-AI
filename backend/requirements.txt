@@ -9,3 +9,4 @@ langchain-core
 langchain-groq
 groq
 sqlacodegen
+svix # for clerk
