@@ -12,3 +12,4 @@ sqlacodegen
 svix # for clerk
 PyJWT
 cryptography
+razorpay
